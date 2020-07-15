@@ -1,11 +1,10 @@
 // Variables
 const inquirer = require("inquirer");
 const fs = require("fs");
-// const writeFileAsync = util.promisify(fs.writeFile);
+const generateMarkdown = require("./generateMarkdown");
 
 // array of questions for user
-function promptUser() {
-    return inquirer.prompt([
+const questions = [
     {
         type: "input",
         name: "title",
@@ -23,7 +22,7 @@ function promptUser() {
     },
     {
         type: "input",
-        name: "installation-instructions",
+        name: "installationinstructions",
         message: "List the installation instructions."
     },
     {
@@ -32,7 +31,7 @@ function promptUser() {
         message: "What is the purpose of your usage of this application?"
     },
     {
-        type: "input",
+        type: "list",
         name: "license",
         message: "Select a license:",
         choices: [
@@ -53,46 +52,32 @@ function promptUser() {
         },
         {
             type: "input",
-            name: "questions",
+            name: "email",
             message: "What is your email address?"
         },
-    ])
-}
+];
 
 // function to write README file
-    promptUser()
-        .then(function(answers) {
-            const html = generateHTML(answers);
+      // function to initialize program, prompt questions and generate answers
+      function init() {
+        inquirer.prompt(questions).then((answers)=>{
 
-            return writeFileAsync("index.html", html);
+            return writeFile("README.md", generateMarkdown(answers));
         })
         .then(function() {
             console.log("Success");
         })
         .catch(function(err) {
             console.log(err);
-        })
-
-        
-    function writeFile () {
-        var readMe = data.name.toLowerCase().split(' ').join('') + ".json";
-
-        fs.writeFile("README.md", JSON.stringify(data, null, '\t'), function (err) {
-
-            if (err) {
-                return console.log(err);
-            }
-            console.log("Success");
-
         });
-
     };
 
-    // function to initialize program
-    function init() {
-        inquirer.prompt(questions).then((answers)=>{
-        },
-      )};
+    // Writes answers onto template and prints/exports out to README.md
+    function writeFile (filename, data) {
+
+        fs.writeFileSync(filename, data)
+
+    };
 
     // function call to initialize program
     init();
